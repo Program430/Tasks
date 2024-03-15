@@ -1,6 +1,5 @@
 import chalk from 'chalk';
 
-
 let tasks = [
     { id: 1, description: "Выучить JavaScript", status: "In progress" },
     { id: 2, description: "Закончить проект", status: "Completed" },

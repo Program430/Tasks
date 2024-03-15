@@ -1,8 +1,10 @@
-import {Task} from './task.js';
+import { EventEmitter } from 'events';
+import { Task } from './task.js';
 import fs from 'fs';
 
-export class TaskManager {
+export class TaskManager extends EventEmitter {
   constructor() {
+    super();
     this.tasks = [];
     this.tasksFile = 'tasks.json';
   }
@@ -21,7 +23,8 @@ export class TaskManager {
     const newTask = new Task(id, description, status);
     this.tasks.push(newTask);
     this.saveTasks();
-    console.log(`Задача добавлена: ${newTask.toString()}`);
+    this.emit('taskAdded', newTask);
+
   }
 
   removeTask(taskId) {
@@ -29,7 +32,7 @@ export class TaskManager {
     if (taskIndex !== -1) {
       const removedTask = this.tasks.splice(taskIndex, 1)[0];
       this.saveTasks();
-      console.log(`Задача удалена: ${removedTask.toString()}`);
+      this.emit('taskRemoved', removedTask);
     } else {
       console.log("Задача не найдена");
     }
@@ -46,4 +49,3 @@ export class TaskManager {
     }
   }
 }
-
