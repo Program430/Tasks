@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import { Task } from './task.js';
 import fs from 'fs';
+import { TaskModel } from './TaskModel.js';
 
 export class TaskManager extends EventEmitter {
   constructor() {
@@ -17,6 +18,22 @@ export class TaskManager extends EventEmitter {
       const task = new Task(taskData.id, taskData.description, taskData.status);
       this.tasks.push(task);
     }
+
+
+    fs.readFile('tasks.json', 'utf8', (err, data) => {
+      if (err) {
+        console.error("Error reading file:", err);
+        return;
+      }
+      
+      const tasksData = JSON.parse(data);
+      this.tasks = tasksData.map(task => {
+        const newTask = new TaskModel(task);
+        newTask.save();
+        return newTask;
+      });
+    });
+
   }
 
   addTask(id, description, status) {
